@@ -1,9 +1,7 @@
 import cupy as cp
-import numpy as np
 import os
 import matplotlib.pyplot as plt
 import copy
-import time
 
 DATA_DIR = 'C:/Users/Will Schulte/Desktop'
 TRAIN_DATA = os.path.join(DATA_DIR, 'train_data')
@@ -38,7 +36,7 @@ def propagate(w, b, X, Y):
     cost = (-1 / m) * (cp.sum(Y * cp.log(a + small) + (1 - Y) * cp.log(1 - a + small)))
     # backward propagation
     dw = cp.dot(X.T, (a - Y))
-    db = (a - Y)
+    db = cp.sum(a - Y)
     return {"dw": dw, "db": db}, cp.squeeze(cp.array(cost))
 
 
@@ -60,10 +58,10 @@ def optimize(w, b, X, Y, num_Iterations, learning_rate, print_info):
 
         if i % 100 == 0:
             costs.append(cost)
-            accuracy.append(100 - cp.mean(cp.abs(predict(w, b, X) - Y)) * 100)
+            accuracy.append((100 - cp.mean(cp.abs(predict(w, b, X) - Y)) * 100)/100)
             if print_info:
                 print("Cost after iteration %i: %f" % (i, cost))
-                print("Accuracy after iteration %i: %f" % (i, accuracy[int(i/100)]))
+                print("Accuracy after iteration %i: %f" % (i, accuracy[int(i/100)]/100))
 
     params = {"w": w,
               "b": b}
@@ -75,7 +73,9 @@ def optimize(w, b, X, Y, num_Iterations, learning_rate, print_info):
 
 
 def initialize_with_zeros(dim):
-    return cp.zeros(dim), 0
+    w = cp.zeros(dim)
+    b = cp.random.randn()
+    return w, b
 
 
 def model(X_train, Y_train, X_test, Y_test, num_iterations = 1000, learning_rate = 0.00001, print_info=True):
