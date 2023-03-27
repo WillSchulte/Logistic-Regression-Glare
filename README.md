@@ -1,5 +1,5 @@
 # Logistic-Regression-Glare
-Uses logistic regression-based machine learning to recognize sun glare in a set of images.
+Demonstration of a logistic regression-based machine learning that recognizes sun glare in a set of images.
 
 The file 'preprocess.py' processes the images into flat arrays of RGB data, then uploads them to their respective .csv files.
 
